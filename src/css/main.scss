@@ -1,0 +1,17 @@
+* {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+html {
+  min-width: 280px;
+}
+
+.input-appended {
+  border-bottom-left-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+}
+
+.input-prepended {
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
