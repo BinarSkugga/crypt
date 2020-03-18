@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <v-message v-for="(message, i) in messages" v-bind:key="i"
-                   :message="message" :sending="form.sending" :selected="selected"
+                   :message="message" :sending="form.sending" :selected="selected" :foreign="false"
                    @onSelect="onSelect" @onDelete="onDelete" @onEdit="onEdit"></v-message>
         <el-form class="send-form" :model="form" @submit.native.prevent>
             <el-form-item>
@@ -44,7 +44,7 @@
                 form: {
                     message: '',
                     editing: null,
-                    sending: []
+                    sending: {}
                 }
             };
         },
@@ -55,10 +55,8 @@
                     this.form.sending[this.id] = true;
 
                     this.sendText({text: this.form.message, id: this.id}).then(message => {
-                        this.form.sending = this.form.sending.map((e, i) => {
-                            if (message.id === i)
-                                delete this.form.sending[i];
-                        });
+                        delete this.form.sending[message.id];
+                        this.form.sending = JSON.parse(JSON.stringify(this.form.sending));
                     });
 
                     this.id += 1;
@@ -69,18 +67,18 @@
                 let message = this.form.editing;
                 this.form.sending[message.id] = true;
                 this.edit(message).then(() => {
-                    this.form.sending = this.form.sending.map((e, i) => {
-                        if (message.id === i)
-                            delete this.form.sending[i];
-                    });
+                    delete this.form.sending[message.id];
+                    this.form.sending = JSON.parse(JSON.stringify(this.form.sending));
                 });
                 this.form.editing = null;
                 this.selected = -1;
             },
             editLast() {
-                let lastMessage = this.messages[this.messages.length - 1];
-                this.selected = lastMessage.id;
-                this.onEdit(lastMessage);
+                if(this.messages && this.messages.length > 0) {
+                    let lastMessage = this.messages[this.messages.length - 1];
+                    this.selected = lastMessage.id;
+                    this.onEdit(lastMessage);
+                }
             },
             onClear() {
                 this.form.editing = null;
@@ -99,10 +97,8 @@
                 this.form.sending[message.id] = true;
                 this.selected = -1;
                 this.delete(message).then(() => {
-                    this.form.sending = this.form.sending.map((e, i) => {
-                        if (message.id === i)
-                            delete this.form.sending[i];
-                    });
+                    delete this.form.sending[message.id];
+                    this.form.sending = JSON.parse(JSON.stringify(this.form.sending));
                 });
             }
         },

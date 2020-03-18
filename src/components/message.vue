@@ -1,6 +1,7 @@
 <template>
-    <div class="message-box">
-        <el-tag v-if="!message.deleted" type="primary" effect="dark" v-loading="sending[message.id]" @click="onSelect(message)">
+    <div class="message-box" :class="{foreign: foreign}">
+        <el-tag v-if="!message.deleted" :type="foreign ? 'info' : 'primary'"
+                effect="dark" v-loading="sending[message.id]" @click="onSelect(message)">
             {{message.text}}
         </el-tag>
         <el-tag v-else type="info" effect="plain">
@@ -9,10 +10,12 @@
         <div class="message-info" :class="{active: (selected === message.id)}">
             {{new Date(message.date).toLocaleString()}}
             <span v-if="message.edited"> (Edited) </span>
-            <b>&middot; </b>
-            <span class="message-edit" @click="onEdit(message)">Edit</span>
-            <b> &middot; </b>
-            <span class="message-delete" @click="onDelete(message)">Delete</span>
+            <span v-if="!foreign">
+                <b>&middot; </b>
+                <span class="message-edit" @click="onEdit(message)">Edit</span>
+                <b> &middot; </b>
+                <span class="message-delete" @click="onDelete(message)">Delete</span>
+            </span>
         </div>
     </div>
 </template>
@@ -20,7 +23,7 @@
 <script>
     export default {
         name: 'message',
-        props: ['message', 'sending', 'selected'],
+        props: ['message', 'sending', 'selected', 'foreign'],
         methods: {
             onSelect(message) {
                 this.$emit('onSelect', message)
@@ -41,6 +44,10 @@
 
         & + .message-box {
             margin-top: 3px;
+        }
+
+        &.foreign {
+            text-align: right;
         }
 
         .message-info {
