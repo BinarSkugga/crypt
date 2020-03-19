@@ -1,5 +1,6 @@
 <template>
     <div class="message-box" :class="{foreign: foreign}">
+        <span v-if="showUser" class="user-label">{{message.user}}</span>
         <el-tag v-if="!message.deleted" :type="foreign ? 'info' : 'primary'"
                 effect="dark" v-loading="sending[message.id]" @click="onSelect(message)">
             {{message.text}}
@@ -23,7 +24,7 @@
 <script>
     export default {
         name: 'message',
-        props: ['message', 'sending', 'selected', 'foreign'],
+        props: ['message', 'sending', 'selected', 'foreign', 'previousMessage'],
         methods: {
             onSelect(message) {
                 this.$emit('onSelect', message)
@@ -33,6 +34,14 @@
             },
             onDelete(message) {
                 this.$emit('onDelete', message)
+            }
+        },
+        computed: {
+            showUser() {
+                if(this.previousMessage == null) return true;
+
+                let timeDiff = (new Date(this.message.date).getTime() - new Date(this.previousMessage.date).getTime()) / 1000;
+                return timeDiff > 60 * 15 || this.message.user !== this.previousMessage.user;
             }
         }
     }
@@ -48,6 +57,18 @@
 
         &.foreign {
             text-align: right;
+
+            .message-info, .el-tag {
+                margin-left: 0;
+                margin-right: 10px;
+            }
+        }
+
+        .user-label {
+            display: block;
+            color: var(--color-info);
+            margin-top: 15px;
+            margin-bottom: 5px;
         }
 
         .message-info {
@@ -56,6 +77,7 @@
             font-size: 13px;
             color: var(--color-info);
             transition: opacity 150ms, height 150ms, padding 150ms;
+            margin-left: 10px;
 
             &.active {
                 height: 12px;
@@ -89,6 +111,7 @@
             height: auto;
             overflow-wrap: break-word !important;
             white-space: normal !important;
+            margin-left: 10px;
 
             ::v-deep .el-loading-mask {
                 border-radius: 3px;

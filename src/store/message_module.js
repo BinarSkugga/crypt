@@ -7,11 +7,13 @@ function getDate() {
 export const messageModule = {
     namespaced: true,
     state: {
+        id: 0,
         messages: []
     },
     mutations: {
         addMessage(state, message) {
             message.date = getDate();
+            message.id = state.id++;
             state.messages.push(message);
         },
         deleteMessage(state, message) {
@@ -26,7 +28,7 @@ export const messageModule = {
             state.messages.map(m => {
                 if(m.id === message.id) {
                     m.text = message.text;
-                    m.date = getDate();
+                    //m.date = getDate();
                     m.edited = true;
                 }
             });

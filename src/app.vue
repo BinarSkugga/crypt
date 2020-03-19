@@ -1,28 +1,47 @@
 <template>
     <div id="app">
-        <v-message v-for="(message, i) in messages" v-bind:key="i"
-                   :message="message" :sending="form.sending" :selected="selected" :foreign="false"
-                   @onSelect="onSelect" @onDelete="onDelete" @onEdit="onEdit"></v-message>
+        <div class="messages">
+            <v-message v-for="(message, i) in messages" v-bind:key="i"
+                   :message="message" :previousMessage="previousMessage(message)" :sending="form.sending"
+                   :selected="selected" :foreign="message.user !== form.user" @onSelect="onSelect" @onDelete="onDelete" @onEdit="onEdit">
+            </v-message>
+        </div>
         <el-form class="send-form" :model="form" @submit.native.prevent>
             <el-form-item>
-                <el-input v-if="form.editing == null" placeholder="Aa" v-model="form.message"
-                          ref="mainInput" @keyup.native.enter="submit()"
-                            @keyup.native.up="editLast()">
+                <el-input v-if="form.editing == null" placeholder="Aa"
+                          v-model="form.message" minlength="1" maxlength="500" show-word-limit
+                          ref="mainInput" @keyup.native.enter="submit()" @keyup.native.up="editLast()">
                     <el-button class="input-appended" type="primary"
                                slot="append" @click="submit()"
-                               :disabled="form.message.trim().length === 0">
+                               :disabled="isInputDisabled">
                         SEND
                     </el-button>
                 </el-input>
-                <el-input v-else placeholder="Aa" v-model="form.editing.text" ref="mainInput"
+                <el-input v-else placeholder="Aa" v-model="form.editing.text"
+                          ref="mainInput" minlength="1" maxlength="500" show-word-limit
                           @keyup.native.enter="submitEdit()" @keyup.native.esc="onClear"
                           clearable @clear="onClear">
                     <el-button class="input-appended" type="primary"
                                slot="append" @click="submitEdit()"
-                               :disabled="form.editing.text.trim().length === 0">
+                               :disabled="isInputDisabled">
                         EDIT
                     </el-button>
                 </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-row :gutter="15">
+                    <el-col :span="12">
+                        <el-input placeholder="Channel" v-model="form.channel"
+                                  minlength="1" maxlength="24" show-word-limit>
+                            <el-button class="input-appended" type="primary"
+                                       icon="el-icon-refresh" slot="append" @click="generateChannel(24)"></el-button>
+                        </el-input>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-input placeholder="Username" v-model="form.user"
+                                  minlength="1" maxlength="16" show-word-limit></el-input>
+                    </el-col>
+                </el-row>
             </el-form-item>
         </el-form>
     </div>
@@ -39,9 +58,10 @@
         },
         data: function () {
             return {
-                id: 0,
                 selected: -1,
                 form: {
+                    user: null,
+                    channel: null,
                     message: '',
                     editing: null,
                     sending: {}
@@ -51,15 +71,14 @@
         methods: {
             ...mapActions('message', ['sendText', 'delete', 'edit']),
             submit() {
-                if (this.form.message.trim().length > 0) {
+                if (!this.isInputDisabled) {
                     this.form.sending[this.id] = true;
 
-                    this.sendText({text: this.form.message, id: this.id}).then(message => {
+                    this.sendText({text: this.form.message, user: this.form.user}).then(message => {
                         delete this.form.sending[message.id];
                         this.form.sending = JSON.parse(JSON.stringify(this.form.sending));
                     });
 
-                    this.id += 1;
                     this.form.message = '';
                 }
             },
@@ -75,9 +94,15 @@
             },
             editLast() {
                 if(this.messages && this.messages.length > 0) {
-                    let lastMessage = this.messages[this.messages.length - 1];
-                    this.selected = lastMessage.id;
-                    this.onEdit(lastMessage);
+                    let lastMessage = null;
+                    this.messages.forEach(v => {
+                       if(v.user === this.form.user) lastMessage = v;
+                    });
+
+                    if(lastMessage !== null) {
+                        this.selected = lastMessage.id;
+                        this.onEdit(lastMessage);
+                    }
                 }
             },
             onClear() {
@@ -100,17 +125,56 @@
                     delete this.form.sending[message.id];
                     this.form.sending = JSON.parse(JSON.stringify(this.form.sending));
                 });
+            },
+            generateChannel(length) {
+                let channel = '';
+                let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                for (let i = 0; i < length; i++)
+                    channel += chars.charAt(Math.floor(Math.random() * chars.length));
+
+                this.form.channel = channel;
+            },
+            previousMessage(current) {
+                let index = -1;
+                this.messages.forEach((v, i) => {
+                    if(v.id === current.id) index = i - 1;
+                });
+                if(-1 < index < this.messages.length)
+                    return this.messages[index];
+                else
+                    return null;
             }
         },
         computed: {
             ...mapState({
-                messages: state => state.message.messages
-            })
+                messages: state => state.message.messages,
+                id: state => state.message.id
+            }),
+            isInputDisabled() {
+                let result = false;
+                if(this.form.editing == null)
+                    result = this.form.message.trim().length === 0 || this.form.user == null;
+                else
+                    result = this.form.editing.text.trim().length === 0 || this.form.user == null;
+
+                if(!result) {
+                    console.log('haha')
+                }
+                return result;
+            }
         }
     }
 </script>
 
 <style scoped lang="scss">
+    #app {
+        width: 700px;
+    }
+
+    .messages {
+        padding: 5px;
+    }
+
     .send-form {
         margin-top: 15px;
     }
