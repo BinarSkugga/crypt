@@ -38,8 +38,8 @@
         },
         computed: {
             showUser() {
-                if(this.previousMessage == null) return true;
                 if(!this.foreign) return false;
+                if(this.previousMessage == null) return true;
 
                 let timeDiff = (new Date(this.message.date).getTime() - new Date(this.previousMessage.date).getTime()) / 1000;
                 return timeDiff > 60 * 15 || this.message.user !== this.previousMessage.user;
