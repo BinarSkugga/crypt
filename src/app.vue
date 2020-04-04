@@ -99,7 +99,7 @@
                        if(v.user === this.form.user) lastMessage = v;
                     });
 
-                    if(lastMessage !== null) {
+                    if(lastMessage !== null && !lastMessage.deleted) {
                         this.selected = lastMessage.id;
                         this.onEdit(lastMessage);
                     }
@@ -114,9 +114,11 @@
                 else this.selected = message.id;
             },
             onEdit(message) {
-                this.form.message = '';
-                this.form.editing = JSON.parse(JSON.stringify(message));
-                this.$refs.mainInput.focus();
+                if(!message.deleted) {
+                    this.form.message = '';
+                    this.form.editing = JSON.parse(JSON.stringify(message));
+                    this.$refs.mainInput.focus();
+                }
             },
             onDelete(message) {
                 this.form.sending[message.id] = true;

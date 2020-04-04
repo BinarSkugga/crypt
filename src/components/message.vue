@@ -11,7 +11,7 @@
         <div class="message-info" :class="{active: (selected === message.id)}">
             {{new Date(message.date).toLocaleString()}}
             <span v-if="message.edited"> (Edited) </span>
-            <span v-if="!foreign">
+            <span v-if="!foreign && !message.deleted">
                 <b>&middot; </b>
                 <span class="message-edit" @click="onEdit(message)">Edit</span>
                 <b> &middot; </b>
@@ -39,6 +39,7 @@
         computed: {
             showUser() {
                 if(this.previousMessage == null) return true;
+                if(!this.foreign) return false;
 
                 let timeDiff = (new Date(this.message.date).getTime() - new Date(this.previousMessage.date).getTime()) / 1000;
                 return timeDiff > 60 * 15 || this.message.user !== this.previousMessage.user;
@@ -50,17 +51,17 @@
 <style scoped lang="scss">
     .message-box {
         cursor: default;
+        text-align: right;
 
         & + .message-box {
             margin-top: 3px;
         }
 
         &.foreign {
-            text-align: right;
-
+            text-align: left;
             .message-info, .el-tag {
-                margin-left: 0;
-                margin-right: 10px;
+                margin-right: 0;
+                margin-left: 10px;
             }
         }
 
