@@ -83,7 +83,7 @@ export class EncryptedCommunicator {
 	}
 
 	exportKey(key: CryptoKey) {
-		return crypto.subtle.exportKey('jwk', key).then(console.log);
+		return crypto.subtle.exportKey('jwk', key);
 	}
 
 	symmetricEncrypt(data: string): Promise<string> {

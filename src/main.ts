@@ -14,6 +14,7 @@ import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import './assets/theme.scss';
+import {CryptDB} from "@/cryptdb";
 
 export const fileExtentions = [
 	'mp3',
@@ -121,6 +122,7 @@ export interface SimpleFile {
 	ext: string;
 }
 
+export const cryptdb = new CryptDB('CryptDB');
 
 const vapp = createApp(app)
 vapp.use(store);

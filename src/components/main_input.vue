@@ -37,7 +37,7 @@
 import {defineComponent, ref, computed} from 'vue'
 import Ripple from 'primevue/ripple';
 import Tooltip from 'primevue/tooltip';
-import {SimpleFile, fileExtentions} from "@/main";
+import {SimpleFile, fileExtentions, cryptdb} from "@/main";
 import {Message} from "@/message";
 import {EncryptedCommunicator} from "@/crypto";
 
@@ -112,8 +112,6 @@ export default defineComponent({
 				let tempec = new EncryptedCommunicator();
 				tempec.generateAsymmetricKey().then(keyPair => {
 					let remotePublic = keyPair.public;
-					tempec.exportKey(remotePublic);
-
 					tempec.handshake(remotePublic).then(ec => {
 						let txt = text.value.trim();
 						let images = [...encodedImages.value];
