@@ -1,0 +1,180 @@
+$width: 40px;
+$height: 45px;
+
+@mixin file-def($ext, $color) {
+	.file[data-ext='#{$ext}'] {
+		background-color: $color;
+		&::after {
+			content: '#{$ext}';
+			color: light-or-dark($color);
+		}
+	}
+}
+
+.arrow-up {
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-bottom: 6px solid black;
+}
+
+.file {
+	position: relative;
+	display: inline-block;
+	border-radius: 3px;
+	height: $height;
+	width: $width;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		right: 0;
+		border-style: solid;
+		border-width: 0 10px 10px 0;
+		border-color: rgba(255, 255, 255, 0.5) #FFF;
+	}
+
+	&.dark::before {
+		border-color: rgba(255, 255, 255, 0.5) #333;
+	}
+
+	&::after {
+		position: absolute;
+		font-size: 13px;
+		font-weight: bold;
+		bottom: 2px;
+		left: 3px;
+	}
+
+	&.default {
+		$color: #AAA;
+		background-color: $color !important;
+		&::after {
+			content: 'n/a';
+			color: light-or-dark($color) !important;
+		}
+	}
+}
+
+// audio
+@include file-def('mp3', #156AEA);
+@include file-def('wav', #36AF14);
+@include file-def('aif', #F55F73);
+@include file-def('cda', #1081D1);
+@include file-def('mid', #21C6FC);
+@include file-def('midi', darken(#21C6FC, 10%));
+@include file-def('mpa', #8DEEF1);
+@include file-def('mkv', #EC93D8);
+@include file-def('ogg', #576C7B);
+@include file-def('wpa', #214767);
+@include file-def('wpl', #2383F5);
+
+// compressed
+@include file-def('7z', #F63);
+@include file-def('zip', #FFB229);
+@include file-def('rar', #AC3CC1);
+@include file-def('tar.gz', #C6AD86);
+@include file-def('pkg', #955B2A);
+@include file-def('z', darken(#C6AD86, 10%));
+
+// data
+@include file-def('csv', #579704);
+@include file-def('dat', #0463EA);
+@include file-def('json', #333333);
+@include file-def('xml', #0E886B);
+@include file-def('dat', #8B9C35);
+@include file-def('db', darken(#8B9C35, 10%));
+@include file-def('dbf', #58E6A9);
+
+// sql
+@include file-def('sql', #157EFB);
+@include file-def('ns', #249C3B);
+
+// design
+@include file-def('3ds', #015051);
+@include file-def('max', lighten(#015051, 20%));
+@include file-def('ai', #F67503);
+@include file-def('psd', #181040);
+
+// fonts
+@include file-def('ttf', #174F57);
+@include file-def('woff', #1B8C73);
+@include file-def('woff2', darken(#1B8C73, 5%));
+
+// images
+@include file-def('png', #DC7460);
+@include file-def('bmp', #459FA0);
+@include file-def('jpg', #0074D0);
+@include file-def('jpeg', darken(#0074D0, 5%));
+@include file-def('gif', #7979EC);
+@include file-def('tif', #CE0258);
+@include file-def('tiff', darken(#CE0258, 5%));
+@include file-def('svg', #E6A420);
+
+// p2p
+@include file-def('rss', #fd8b33);
+@include file-def('torrent', #55ac44);
+
+// presentation
+@include file-def('ppt', #ce4123);
+@include file-def('pps', darken(#d04626, 4%));
+@include file-def('pptx', darken(#ca4425, 7%));
+@include file-def('odp', #38aef9);
+
+// code
+@include file-def('asp', #5c2d91);
+@include file-def('c', #3747a5);
+@include file-def('cs', #013467);
+@include file-def('java', #ea2c2e);
+@include file-def('jsp', #e5000c);
+@include file-def('swift', #f32a20);
+@include file-def('php', #4f5b93);
+@include file-def('hh', #505050);
+@include file-def('go', #e0ebf5);
+@include file-def('py', #3472a3);
+@include file-def('js', #f0db4f);
+@include file-def('html', #e54c21);
+@include file-def('xhtml', #55a9ef);
+@include file-def('css', #264de4);
+@include file-def('vb', #19aad9);
+@include file-def('rb', #a20d01);
+@include file-def('scss', #bf4080);
+@include file-def('sass', darken(#bf4080, 3%));
+@include file-def('less', #1d365d);
+@include file-def('jsx', #61dafb);
+@include file-def('sh', #2a3238);
+@include file-def('pl', #028fbd);
+
+// tabs
+@include file-def('xls', #86d44c);
+@include file-def('xlsx', darken(#86d44c, 10%));
+@include file-def('xlsm', darken(#86d44c, 15%));
+@include file-def('ods', darken(#168b3a, 15%));
+
+// system
+@include file-def('dll', #960a4a);
+@include file-def('bak', #058bca);
+@include file-def('ini', #0b2955);
+@include file-def('dmp', #1960a2);
+@include file-def('sys', #abe6f1);
+@include file-def('cfg', darken(#abe6f1, 10%));
+@include file-def('tmp', darken(#abe6f1, 15%));
+@include file-def('icns', lighten(#abe6f1, 2%));
+
+// txt
+@include file-def('doc', #235d9c);
+@include file-def('docx', #2980b9);
+@include file-def('log', #accff3);
+@include file-def('txt', #8bc6d6);
+@include file-def('pdf', #f88e21);
+
+// video
+@include file-def('avi', #40c1e6);
+@include file-def('mov', #ff5838);
+@include file-def('mp4', #4163b4);
+@include file-def('wmv', #f76205);
+@include file-def('mpg', #1298d6);
+@include file-def('mpeg', darken(#1298d6, 10%));
+@include file-def('mkv', darken(#1298d6, 15%));

@@ -1,0 +1,65 @@
+:root {
+	--primary-color:#27AE60;
+	--light-primary-color: #2ECC7133
+}
+
+* {
+	font-family: Roboto, sans-serif;
+}
+
+.p-inputtext:enabled {
+	&:focus, &:hover {
+		border-color: var(--primary-color) !important;
+	}
+	&:focus {
+		box-shadow: 0 0 0 0.2rem var(--light-primary-color) !important
+	}
+}
+
+.p-ripple.primary {
+	color: var(--primary-color) !important;
+
+	.p-ink {
+		background-color: var(--light-primary-color) !important;
+	}
+}
+
+.p-tooltip {
+	max-width: initial !important;
+}
+
+@import 'linearcv';
+
+@function luminance($color) {
+	$red: nth($linear-channel-values, red($color) + 1);
+	$green: nth($linear-channel-values, green($color) + 1);
+	$blue: nth($linear-channel-values, blue($color) + 1);
+	$calculation: .2126 * $red + .7152 * $green + .0722 * $blue;
+	@return $calculation;
+}
+
+@function color-contrast($fg, $bg) {
+	$luminance1: luminance($fg) + .05;
+	$luminance2: luminance($bg) + .05;
+
+	$ratio: $luminance1 / $luminance2;
+	@if $luminance2 > $luminance1 {
+		$ratio: 1 / $ratio;
+	}
+
+	$ratio: round($ratio * 100) / 100;
+	@return $ratio;
+}
+
+@function light-or-dark($color) {
+	$light-contrast: color-contrast($color, #FFF);
+	$dark-contrast: color-contrast($color, #000);
+
+	@if $light-contrast > $dark-contrast - 2 {
+		@return white;
+	} @else {
+		@return black;
+	}
+}
+
+@import 'file';
